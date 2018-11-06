@@ -42,7 +42,7 @@ export const parseTextBounds = (
     for (var i = 0; i < length; i++) {
         var text = textList[i];
         if (parent.style.textDecoration !== TEXT_DECORATION.NONE || text.trim().length > 0) {
-            if (FEATURES.default.SUPPORT_RANGE_BOUNDS) {
+            if (FEATURES.SUPPORT_RANGE_BOUNDS) {
                 var newBound = getRangeBounds(node, offset, text.length, scrollX, scrollY);
                 bounds.push(newBound);
 
@@ -58,7 +58,7 @@ export const parseTextBounds = (
                 textBounds.push(new TextBounds(text, getWrapperBounds(node, scrollX, scrollY)));
                 node = replacementNode;
             }
-        } else if (!FEATURES.default.SUPPORT_RANGE_BOUNDS) {
+        } else if (!FEATURES.SUPPORT_RANGE_BOUNDS) {
             node = node.splitText(text.length);
         }
         offset += text.length;

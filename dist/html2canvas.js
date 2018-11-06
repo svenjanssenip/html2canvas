@@ -2990,7 +2990,7 @@ var parseTextBounds = exports.parseTextBounds = function parseTextBounds(value, 
     for (var i = 0; i < length; i++) {
         var text = textList[i];
         if (parent.style.textDecoration !== _textDecoration.TEXT_DECORATION.NONE || text.trim().length > 0) {
-            if (_Feature2.default.default.SUPPORT_RANGE_BOUNDS) {
+            if (_Feature2.default.SUPPORT_RANGE_BOUNDS) {
                 var newBound = getRangeBounds(node, offset, text.length, scrollX, scrollY);
                 bounds.push(newBound);
 
@@ -3006,7 +3006,7 @@ var parseTextBounds = exports.parseTextBounds = function parseTextBounds(value, 
                 textBounds.push(new TextBounds(text, getWrapperBounds(node, scrollX, scrollY)));
                 node = replacementNode;
             }
-        } else if (!_Feature2.default.default.SUPPORT_RANGE_BOUNDS) {
+        } else if (!_Feature2.default.SUPPORT_RANGE_BOUNDS) {
             node = node.splitText(text.length);
         }
         offset += text.length;
