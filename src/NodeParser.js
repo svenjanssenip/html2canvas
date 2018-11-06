@@ -1,13 +1,13 @@
 /* @flow */
 'use strict';
-import type ResourceLoader, {ImageElement} from './ResourceLoader';
+import type ResourceLoader, { ImageElement } from './ResourceLoader';
 import type Logger from './Logger';
 import StackingContext from './StackingContext';
 import NodeContainer from './NodeContainer';
 import TextContainer from './TextContainer';
-import {inlineInputElement, inlineTextAreaElement, inlineSelectElement} from './Input';
-import {inlineListItemElement} from './ListItem';
-import {LIST_STYLE_TYPE} from './parsing/listStyle';
+import { inlineInputElement, inlineTextAreaElement, inlineSelectElement } from './Input';
+import { inlineListItemElement } from './ListItem';
+import { LIST_STYLE_TYPE } from './parsing/listStyle';
 
 export const NodeParser = (
     node: HTMLElement,
@@ -54,6 +54,7 @@ const parseNodeTree = (
             (defaultView.parent && childNode instanceof defaultView.parent.Text)
         ) {
             if (childNode.data.trim().length > 0) {
+                childNode.data = childNode.data.trim();
                 parent.childNodes.push(TextContainer.fromTextNode(childNode, parent));
             }
         } else if (

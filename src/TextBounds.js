@@ -2,11 +2,11 @@
 'use strict';
 
 import type NodeContainer from './NodeContainer';
-import {Bounds, parseBounds} from './Bounds';
-import {TEXT_DECORATION} from './parsing/textDecoration';
+import { Bounds, parseBounds } from './Bounds';
+import { TEXT_DECORATION } from './parsing/textDecoration';
 
 import FEATURES from './Feature';
-import {breakWords, toCodePoints, fromCodePoint} from './Unicode';
+import { breakWords, toCodePoints, fromCodePoint } from './Unicode';
 
 export class TextBounds {
     text: string;
@@ -23,36 +23,52 @@ export const parseTextBounds = (
     parent: NodeContainer,
     node: Text
 ): Array<TextBounds> => {
-    const letterRendering = parent.style.letterSpacing !== 0;
-    const textList = letterRendering
-        ? toCodePoints(value).map(i => fromCodePoint(i))
-        : breakWords(value, parent);
-    const length = textList.length;
-    const defaultView = node.parentNode ? node.parentNode.ownerDocument.defaultView : null;
-    const scrollX = defaultView ? defaultView.pageXOffset : 0;
-    const scrollY = defaultView ? defaultView.pageYOffset : 0;
-    const textBounds = [];
-    let offset = 0;
-    for (let i = 0; i < length; i++) {
-        let text = textList[i];
-        if (parent.style.textDecoration !== TEXT_DECORATION.NONE || text.trim().length > 0) {
-            if (FEATURES.SUPPORT_RANGE_BOUNDS) {
-                textBounds.push(
-                    new TextBounds(
-                        text,
-                        getRangeBounds(node, offset, text.length, scrollX, scrollY)
-                    )
-                );
+    var letterRendering = parent.style.letterSpacing !== 0;
+    var textList = letterRendering ? (0, _Unicode.toCodePoints)(value).map(function (i) {
+        return (0, _Unicode.fromCodePoint)(i);
+    }) : (0, _Unicode.breakWords)(value, parent);
+    var length = textList.length;
+    var defaultView = node.parentNode ? node.parentNode.ownerDocument.defaultView : null;
+    var scrollX = defaultView ? defaultView.pageXOffset : 0;
+    var scrollY = defaultView ? defaultView.pageYOffset : 0;
+    var textBounds = [];
+    var offset = 0;
+
+    var splittedText = [""];
+    var topOffsets = [0];
+    var index = 0;
+    var bounds = [];
+
+    for (var i = 0; i < length; i++) {
+        var text = textList[i];
+        if (parent.style.textDecoration !== _textDecoration.TEXT_DECORATION.NONE || text.trim().length > 0) {
+            if (_Feature2.default.SUPPORT_RANGE_BOUNDS) {
+                var newBound = getRangeBounds(node, offset, text.length, scrollX, scrollY);
+                bounds.push(newBound);
+
+                if (bounds.length > 1 && bounds[i].top !== bounds[i - 1].top) {
+                    index++;
+                    splittedText[index] = "";
+                    topOffsets[index] = bounds[i].top - bounds[i - 1].top;
+                }
+
+                splittedText[index] += text;
             } else {
-                const replacementNode = node.splitText(text.length);
+                var replacementNode = node.splitText(text.length);
                 textBounds.push(new TextBounds(text, getWrapperBounds(node, scrollX, scrollY)));
                 node = replacementNode;
             }
-        } else if (!FEATURES.SUPPORT_RANGE_BOUNDS) {
+        } else if (!_Feature2.default.SUPPORT_RANGE_BOUNDS) {
             node = node.splitText(text.length);
         }
         offset += text.length;
     }
+
+    for (var i = 0; i < splittedText.length; i++) {
+        var trimmedText = splittedText[i].trim();
+        textBounds.push(new TextBounds(trimmedText, getRangeBounds(node, 0, trimmedText.length, scrollX, scrollY + topOffsets[i])))
+    }
+
     return textBounds;
 };
 

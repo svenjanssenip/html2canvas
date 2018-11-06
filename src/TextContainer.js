@@ -2,10 +2,10 @@
 'use strict';
 
 import type NodeContainer from './NodeContainer';
-import type {TextTransform} from './parsing/textTransform';
-import type {TextBounds} from './TextBounds';
-import {TEXT_TRANSFORM} from './parsing/textTransform';
-import {parseTextBounds} from './TextBounds';
+import type { TextTransform } from './parsing/textTransform';
+import type { TextBounds } from './TextBounds';
+import { TEXT_TRANSFORM } from './parsing/textTransform';
+import { parseTextBounds } from './TextBounds';
 
 export default class TextContainer {
     text: string;
@@ -19,7 +19,7 @@ export default class TextContainer {
     }
 
     static fromTextNode(node: Text, parent: NodeContainer) {
-        const text = transform(node.data, parent.style.textTransform);
+        const text = transform(node.data, parent.style.textTransform).trim();
         return new TextContainer(text, parent, parseTextBounds(text, parent, node));
     }
 }
