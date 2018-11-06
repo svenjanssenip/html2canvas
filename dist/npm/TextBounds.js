@@ -7,13 +7,13 @@ exports.parseTextBounds = exports.TextBounds = undefined;
 
 var _Bounds = require('./Bounds');
 
-var _textDecoration2 = require('./parsing/textDecoration');
+var _textDecoration = require('./parsing/textDecoration');
 
 var _Feature = require('./Feature');
 
-var _Feature3 = _interopRequireDefault(_Feature);
+var _Feature2 = _interopRequireDefault(_Feature);
 
-var _Unicode2 = require('./Unicode');
+var _Unicode = require('./Unicode');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -46,7 +46,7 @@ var parseTextBounds = exports.parseTextBounds = function parseTextBounds(value, 
     for (var i = 0; i < length; i++) {
         var text = textList[i];
         if (parent.style.textDecoration !== _textDecoration.TEXT_DECORATION.NONE || text.trim().length > 0) {
-            if (_Feature2.default.SUPPORT_RANGE_BOUNDS) {
+            if (_Feature2.default.default.SUPPORT_RANGE_BOUNDS) {
                 var newBound = getRangeBounds(node, offset, text.length, scrollX, scrollY);
                 bounds.push(newBound);
 
@@ -62,7 +62,7 @@ var parseTextBounds = exports.parseTextBounds = function parseTextBounds(value, 
                 textBounds.push(new TextBounds(text, getWrapperBounds(node, scrollX, scrollY)));
                 node = replacementNode;
             }
-        } else if (!_Feature2.default.SUPPORT_RANGE_BOUNDS) {
+        } else if (!_Feature2.default.default.SUPPORT_RANGE_BOUNDS) {
             node = node.splitText(text.length);
         }
         offset += text.length;

@@ -24,9 +24,9 @@ export const parseTextBounds = (
     node: Text
 ): Array<TextBounds> => {
     var letterRendering = parent.style.letterSpacing !== 0;
-    var textList = letterRendering ? (0, _Unicode.toCodePoints)(value).map(function (i) {
-        return (0, _Unicode.fromCodePoint)(i);
-    }) : (0, _Unicode.breakWords)(value, parent);
+    var textList = letterRendering ? (0, toCodePoints)(value).map(function (i) {
+        return (0, fromCodePoint)(i);
+    }) : (0, breakWords)(value, parent);
     var length = textList.length;
     var defaultView = node.parentNode ? node.parentNode.ownerDocument.defaultView : null;
     var scrollX = defaultView ? defaultView.pageXOffset : 0;
@@ -41,8 +41,8 @@ export const parseTextBounds = (
 
     for (var i = 0; i < length; i++) {
         var text = textList[i];
-        if (parent.style.textDecoration !== _textDecoration.TEXT_DECORATION.NONE || text.trim().length > 0) {
-            if (_Feature2.default.SUPPORT_RANGE_BOUNDS) {
+        if (parent.style.textDecoration !== TEXT_DECORATION.NONE || text.trim().length > 0) {
+            if (FEATURES.default.SUPPORT_RANGE_BOUNDS) {
                 var newBound = getRangeBounds(node, offset, text.length, scrollX, scrollY);
                 bounds.push(newBound);
 
@@ -58,7 +58,7 @@ export const parseTextBounds = (
                 textBounds.push(new TextBounds(text, getWrapperBounds(node, scrollX, scrollY)));
                 node = replacementNode;
             }
-        } else if (!_Feature2.default.SUPPORT_RANGE_BOUNDS) {
+        } else if (!FEATURES.default.SUPPORT_RANGE_BOUNDS) {
             node = node.splitText(text.length);
         }
         offset += text.length;
