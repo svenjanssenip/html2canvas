@@ -24,7 +24,7 @@ var TextContainer = function () {
     _createClass(TextContainer, null, [{
         key: 'fromTextNode',
         value: function fromTextNode(node, parent) {
-            var text = transform(node.data, parent.style.textTransform).trim();
+            var text = transform(node.data, parent.style.textTransform).replace(/−/g, "-").trim();
             return new TextContainer(text, parent, (0, _TextBounds.parseTextBounds)(text, parent, node));
         }
     }]);

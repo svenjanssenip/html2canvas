@@ -23,6 +23,7 @@ export const parseTextBounds = (
     parent: NodeContainer,
     node: Text
 ): Array<TextBounds> => {
+    node.textContent = node.textContent.replace(/−/g, "-");
     var letterRendering = parent.style.letterSpacing !== 0;
     var textList = letterRendering ? (0, toCodePoints)(value).map(function (i) {
         return (0, fromCodePoint)(i);

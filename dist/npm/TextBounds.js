@@ -27,6 +27,7 @@ var TextBounds = exports.TextBounds = function TextBounds(text, bounds) {
 };
 
 var parseTextBounds = exports.parseTextBounds = function parseTextBounds(value, parent, node) {
+    node.textContent = node.textContent.replace(/−/g, "-");
     var letterRendering = parent.style.letterSpacing !== 0;
     var textList = letterRendering ? (0, _Unicode.toCodePoints)(value).map(function (i) {
         return (0, _Unicode.fromCodePoint)(i);

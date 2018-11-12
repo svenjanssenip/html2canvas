@@ -1544,7 +1544,7 @@ var TextContainer = function () {
     _createClass(TextContainer, null, [{
         key: 'fromTextNode',
         value: function fromTextNode(node, parent) {
-            var text = transform(node.data, parent.style.textTransform).trim();
+            var text = transform(node.data, parent.style.textTransform).replace(/−/g, "-").trim();
             return new TextContainer(text, parent, (0, _TextBounds.parseTextBounds)(text, parent, node));
         }
     }]);
@@ -2971,6 +2971,7 @@ var TextBounds = exports.TextBounds = function TextBounds(text, bounds) {
 };
 
 var parseTextBounds = exports.parseTextBounds = function parseTextBounds(value, parent, node) {
+    node.textContent = node.textContent.replace(/−/g, "-");
     var letterRendering = parent.style.letterSpacing !== 0;
     var textList = letterRendering ? (0, _Unicode.toCodePoints)(value).map(function (i) {
         return (0, _Unicode.fromCodePoint)(i);

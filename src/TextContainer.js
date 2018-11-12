@@ -19,7 +19,7 @@ export default class TextContainer {
     }
 
     static fromTextNode(node: Text, parent: NodeContainer) {
-        const text = transform(node.data, parent.style.textTransform).trim();
+        const text = transform(node.data, parent.style.textTransform).replace(/−/g, "-").trim();
         return new TextContainer(text, parent, parseTextBounds(text, parent, node));
     }
 }
