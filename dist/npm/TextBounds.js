@@ -35,6 +35,8 @@ var parseTextBounds = exports.parseTextBounds = function parseTextBounds(value, 
     var defaultView = node.parentNode ? node.parentNode.ownerDocument.defaultView : null;
     var scrollX = defaultView ? defaultView.pageXOffset : 0;
     var scrollY = defaultView ? defaultView.pageYOffset : 0;
+    var scrollYPlusOffset = scrollY;
+
     var textBounds = [];
     var offset = 0;
 
@@ -69,8 +71,12 @@ var parseTextBounds = exports.parseTextBounds = function parseTextBounds(value, 
     }
 
     for (var i = 0; i < splittedText.length; i++) {
+        scrollYPlusOffset += topOffsets[i];
+
         var trimmedText = splittedText[i].trim();
-        textBounds.push(new TextBounds(trimmedText, getRangeBounds(node, 0, trimmedText.length, scrollX, scrollY + topOffsets[i])));
+        var rangeBounds = getRangeBounds(node, 0, trimmedText.length, scrollX, scrollYPlusOffset);
+        if (rangeBounds.height > topOffsets[i]) rangeBounds.height -= topOffsets[i];
+        textBounds.push(new TextBounds(trimmedText, rangeBounds));
     }
 
     return textBounds;
