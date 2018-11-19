@@ -32,6 +32,7 @@ export const parseTextBounds = (
     var defaultView = node.parentNode ? node.parentNode.ownerDocument.defaultView : null;
     var scrollX = defaultView ? defaultView.pageXOffset : 0;
     var scrollY = defaultView ? defaultView.pageYOffset : 0;
+
     var scrollYPlusOffset = scrollY;
 
     var textBounds = [];
@@ -41,6 +42,13 @@ export const parseTextBounds = (
     var topOffsets = [0];
     var index = 0;
     var bounds = [];
+
+    if (parent.tagName === "LABEL-TRANSLATABLE" && (parent.parent.tagName === "TD" || parent.parent.tagName === "TH" || parent.parent.parent.tagName === "TD")) {
+        var grandParent = parent.parent;
+        if (grandParent.childNodes.length !== 0) {
+            scrollX -= (grandParent.childNodes[0].bounds[0].bounds.left - grandParent.bounds.left)
+        }
+    }
 
     for (var i = 0; i < length; i++) {
         var text = textList[i];
