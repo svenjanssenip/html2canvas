@@ -47,13 +47,6 @@ var parseTextBounds = exports.parseTextBounds = function parseTextBounds(value, 
     var index = 0;
     var bounds = [];
 
-    if (parent.tagName === "LABEL-TRANSLATABLE" && (parent.parent.tagName === "TD" || parent.parent.tagName === "TH" || parent.parent.parent.tagName === "TD")) {
-        var grandParent = parent.parent;
-        if (grandParent.childNodes.length !== 0) {
-            scrollX -= grandParent.childNodes[0].bounds[0].bounds.left - grandParent.bounds.left;
-        }
-    }
-
     for (var i = 0; i < length; i++) {
         var text = textList[i];
         if (parent.style.textDecoration !== _textDecoration.TEXT_DECORATION.NONE || text.trim().length > 0) {
