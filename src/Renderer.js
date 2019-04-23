@@ -356,6 +356,7 @@ export default class Renderer {
     }
 
     render(stack: StackingContext): Promise<*> {
+        this.target.ctx.autoPaging = true;
         if (this.options.backgroundColor) {
             this.target.rectangle(
                 this.options.x,

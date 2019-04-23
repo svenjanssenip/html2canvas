@@ -1,6 +1,6 @@
 /*!
  * html2canvas 1.0.0-alpha.12 <https://html2canvas.hertzen.com>
- * Copyright (c) 2018 Niklas von Hertzen <https://hertzen.com>
+ * Copyright (c) 2019 Niklas von Hertzen <https://hertzen.com>
  * Released under MIT License
  */
 (function webpackUniversalModuleDefinition(root, factory) {
@@ -5531,6 +5531,7 @@ var Renderer = function () {
         value: function render(stack) {
             var _this5 = this;
 
+            this.target.ctx.autoPaging = true;
             if (this.options.backgroundColor) {
                 this.target.rectangle(this.options.x, this.options.y, this.options.width, this.options.height, this.options.backgroundColor);
             }
