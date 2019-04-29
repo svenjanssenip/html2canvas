@@ -5315,7 +5315,7 @@ var Renderer = function () {
     }
 
     _createClass(Renderer, [{
-        key: 'renderNode',
+        key: "renderNode",
         value: function renderNode(container) {
             if (container.isVisible()) {
                 this.renderNodeBackgroundAndBorders(container);
@@ -5323,7 +5323,7 @@ var Renderer = function () {
             }
         }
     }, {
-        key: 'renderNodeContent',
+        key: "renderNodeContent",
         value: function renderNodeContent(container) {
             var _this = this;
 
@@ -5343,8 +5343,8 @@ var Renderer = function () {
                     var _image = _this.options.imageStore.get(container.image);
                     if (_image) {
                         var contentBox = (0, _Bounds.calculateContentBox)(container.bounds, container.style.padding, container.style.border);
-                        var _width = typeof _image.width === 'number' && _image.width > 0 ? _image.width : contentBox.width;
-                        var _height = typeof _image.height === 'number' && _image.height > 0 ? _image.height : contentBox.height;
+                        var _width = typeof _image.width === "number" && _image.width > 0 ? _image.width : contentBox.width;
+                        var _height = typeof _image.height === "number" && _image.height > 0 ? _image.height : contentBox.height;
                         if (_width > 0 && _height > 0) {
                             _this.target.clip([(0, _Bounds.calculatePaddingBoxPath)(container.curvedBounds)], function () {
                                 _this.target.drawImage(_image, new _Bounds.Bounds(0, 0, _width, _height), contentBox);
@@ -5361,7 +5361,7 @@ var Renderer = function () {
             }
         }
     }, {
-        key: 'renderNodeBackgroundAndBorders',
+        key: "renderNodeBackgroundAndBorders",
         value: function renderNodeBackgroundAndBorders(container) {
             var _this2 = this;
 
@@ -5401,12 +5401,12 @@ var Renderer = function () {
             }
         }
     }, {
-        key: 'renderBackgroundImage',
+        key: "renderBackgroundImage",
         value: function renderBackgroundImage(container) {
             var _this3 = this;
 
             container.style.background.backgroundImage.slice(0).reverse().forEach(function (backgroundImage) {
-                if (backgroundImage.source.method === 'url' && backgroundImage.source.args.length) {
+                if (backgroundImage.source.method === "url" && backgroundImage.source.args.length) {
                     _this3.renderBackgroundRepeat(container, backgroundImage);
                 } else if (/gradient/i.test(backgroundImage.source.method)) {
                     _this3.renderBackgroundGradient(container, backgroundImage);
@@ -5414,7 +5414,7 @@ var Renderer = function () {
             });
         }
     }, {
-        key: 'renderBackgroundRepeat',
+        key: "renderBackgroundRepeat",
         value: function renderBackgroundRepeat(container, background) {
             var image = this.options.imageStore.get(background.source.args[0]);
             if (image) {
@@ -5429,7 +5429,7 @@ var Renderer = function () {
             }
         }
     }, {
-        key: 'renderBackgroundGradient',
+        key: "renderBackgroundGradient",
         value: function renderBackgroundGradient(container, background) {
             var backgroundPositioningArea = (0, _background.calculateBackgroungPositioningArea)(container.style.background.backgroundOrigin, container.bounds, container.style.padding, container.style.border);
             var backgroundImageSize = (0, _background.calculateGradientBackgroundSize)(background, backgroundPositioningArea);
@@ -5451,12 +5451,12 @@ var Renderer = function () {
             }
         }
     }, {
-        key: 'renderBorder',
+        key: "renderBorder",
         value: function renderBorder(border, side, curvePoints) {
             this.target.drawShape((0, _Bounds.parsePathForBorder)(curvePoints, side), border.borderColor);
         }
     }, {
-        key: 'renderStack',
+        key: "renderStack",
         value: function renderStack(stack) {
             var _this4 = this;
 
@@ -5478,7 +5478,7 @@ var Renderer = function () {
             }
         }
     }, {
-        key: 'renderStackContent',
+        key: "renderStackContent",
         value: function renderStackContent(stack) {
             var _splitStackingContext = splitStackingContexts(stack),
                 _splitStackingContext2 = _slicedToArray(_splitStackingContext, 5),
@@ -5527,11 +5527,10 @@ var Renderer = function () {
             positiveZIndex.sort(sortByZIndex).forEach(this.renderStack, this);
         }
     }, {
-        key: 'render',
+        key: "render",
         value: function render(stack) {
             var _this5 = this;
 
-            this.target.ctx.autoPaging = true;
             if (this.options.backgroundColor) {
                 this.target.rectangle(this.options.x, this.options.y, this.options.width, this.options.height, this.options.backgroundColor);
             }
@@ -5539,7 +5538,7 @@ var Renderer = function () {
             var target = this.target.getTarget();
             if (true) {
                 return target.then(function (output) {
-                    _this5.options.logger.log('Render completed');
+                    _this5.options.logger.log("Render completed");
                     return output;
                 });
             }

@@ -1,29 +1,34 @@
 /* @flow */
-'use strict';
+"use strict";
 
-import type Color from './Color';
-import type {Path} from './drawing/Path';
-import type Size from './drawing/Size';
-import type Logger from './Logger';
+import type Color from "./Color";
+import type { Path } from "./drawing/Path";
+import type Size from "./drawing/Size";
+import type Logger from "./Logger";
 
-import type {BackgroundImage} from './parsing/background';
-import type {Border, BorderSide} from './parsing/border';
-import type {Font} from './parsing/font';
-import type {TextDecoration} from './parsing/textDecoration';
-import type {TextShadow} from './parsing/textShadow';
-import type {Matrix} from './parsing/transform';
+import type { BackgroundImage } from "./parsing/background";
+import type { Border, BorderSide } from "./parsing/border";
+import type { Font } from "./parsing/font";
+import type { TextDecoration } from "./parsing/textDecoration";
+import type { TextShadow } from "./parsing/textShadow";
+import type { Matrix } from "./parsing/transform";
 
-import type {BoundCurves} from './Bounds';
-import type {LinearGradient, RadialGradient} from './Gradient';
-import type {ResourceStore, ImageElement} from './ResourceLoader';
-import type NodeContainer from './NodeContainer';
-import type StackingContext from './StackingContext';
-import type {TextBounds} from './TextBounds';
+import type { BoundCurves } from "./Bounds";
+import type { LinearGradient, RadialGradient } from "./Gradient";
+import type { ResourceStore, ImageElement } from "./ResourceLoader";
+import type NodeContainer from "./NodeContainer";
+import type StackingContext from "./StackingContext";
+import type { TextBounds } from "./TextBounds";
 
-import {Bounds, parsePathForBorder, calculateContentBox, calculatePaddingBoxPath} from './Bounds';
-import {FontMetrics} from './Font';
-import {parseGradient, GRADIENT_TYPE} from './Gradient';
-import TextContainer from './TextContainer';
+import {
+    Bounds,
+    parsePathForBorder,
+    calculateContentBox,
+    calculatePaddingBoxPath
+} from "./Bounds";
+import { FontMetrics } from "./Font";
+import { parseGradient, GRADIENT_TYPE } from "./Gradient";
+import TextContainer from "./TextContainer";
 
 import {
     calculateBackgroungPositioningArea,
@@ -32,8 +37,8 @@ import {
     calculateBackgroundRepeatPath,
     calculateBackgroundSize,
     calculateGradientBackgroundSize
-} from './parsing/background';
-import {BORDER_STYLE} from './parsing/border';
+} from "./parsing/background";
+import { BORDER_STYLE } from "./parsing/border";
 
 export type RenderOptions = {
     scale: number,
@@ -58,7 +63,13 @@ export interface RenderTarget<Output> {
 
     getTarget(): Promise<Output>,
 
-    rectangle(x: number, y: number, width: number, height: number, color: Color): void,
+    rectangle(
+        x: number,
+        y: number,
+        width: number,
+        height: number,
+        color: Color
+    ): void,
 
     render(options: RenderOptions): void,
 
@@ -84,7 +95,12 @@ export interface RenderTarget<Output> {
 
     setOpacity(opacity: number): void,
 
-    transform(offsetX: number, offsetY: number, matrix: Matrix, callback: () => void): void
+    transform(
+        offsetX: number,
+        offsetY: number,
+        matrix: Matrix,
+        callback: () => void
+    ): void
 }
 
 export default class Renderer {
@@ -133,21 +149,24 @@ export default class Renderer {
                         container.style.border
                     );
                     const width =
-                        typeof image.width === 'number' && image.width > 0
+                        typeof image.width === "number" && image.width > 0
                             ? image.width
                             : contentBox.width;
                     const height =
-                        typeof image.height === 'number' && image.height > 0
+                        typeof image.height === "number" && image.height > 0
                             ? image.height
                             : contentBox.height;
                     if (width > 0 && height > 0) {
-                        this.target.clip([calculatePaddingBoxPath(container.curvedBounds)], () => {
-                            this.target.drawImage(
-                                image,
-                                new Bounds(0, 0, width, height),
-                                contentBox
-                            );
-                        });
+                        this.target.clip(
+                            [calculatePaddingBoxPath(container.curvedBounds)],
+                            () => {
+                                this.target.drawImage(
+                                    image,
+                                    new Bounds(0, 0, width, height),
+                                    contentBox
+                                );
+                            }
+                        );
                     }
                 }
             }
@@ -167,7 +186,8 @@ export default class Renderer {
 
         const hasRenderableBorders = container.style.border.some(
             border =>
-                border.borderStyle !== BORDER_STYLE.NONE && !border.borderColor.isTransparent()
+                border.borderStyle !== BORDER_STYLE.NONE &&
+                !border.borderColor.isTransparent()
         );
 
         const callback = () => {
@@ -178,8 +198,12 @@ export default class Renderer {
 
             if (HAS_BACKGROUND) {
                 this.target.clip([backgroundPaintingArea], () => {
-                    if (!container.style.background.backgroundColor.isTransparent()) {
-                        this.target.fill(container.style.background.backgroundColor);
+                    if (
+                        !container.style.background.backgroundColor.isTransparent()
+                    ) {
+                        this.target.fill(
+                            container.style.background.backgroundColor
+                        );
                     }
 
                     this.renderBackgroundImage(container);
@@ -197,7 +221,9 @@ export default class Renderer {
         };
 
         if (HAS_BACKGROUND || hasRenderableBorders) {
-            const paths = container.parent ? container.parent.getClipPaths() : [];
+            const paths = container.parent
+                ? container.parent.getClipPaths()
+                : [];
             if (paths.length) {
                 this.target.clip(paths, callback);
             } else {
@@ -207,16 +233,25 @@ export default class Renderer {
     }
 
     renderBackgroundImage(container: NodeContainer) {
-        container.style.background.backgroundImage.slice(0).reverse().forEach(backgroundImage => {
-            if (backgroundImage.source.method === 'url' && backgroundImage.source.args.length) {
-                this.renderBackgroundRepeat(container, backgroundImage);
-            } else if (/gradient/i.test(backgroundImage.source.method)) {
-                this.renderBackgroundGradient(container, backgroundImage);
-            }
-        });
+        container.style.background.backgroundImage
+            .slice(0)
+            .reverse()
+            .forEach(backgroundImage => {
+                if (
+                    backgroundImage.source.method === "url" &&
+                    backgroundImage.source.args.length
+                ) {
+                    this.renderBackgroundRepeat(container, backgroundImage);
+                } else if (/gradient/i.test(backgroundImage.source.method)) {
+                    this.renderBackgroundGradient(container, backgroundImage);
+                }
+            });
     }
 
-    renderBackgroundRepeat(container: NodeContainer, background: BackgroundImage) {
+    renderBackgroundRepeat(
+        container: NodeContainer,
+        background: BackgroundImage
+    ) {
         const image = this.options.imageStore.get(background.source.args[0]);
         if (image) {
             const backgroundPositioningArea = calculateBackgroungPositioningArea(
@@ -243,13 +278,26 @@ export default class Renderer {
                 container.bounds
             );
 
-            const offsetX = Math.round(backgroundPositioningArea.left + position.x);
-            const offsetY = Math.round(backgroundPositioningArea.top + position.y);
-            this.target.renderRepeat(path, image, backgroundImageSize, offsetX, offsetY);
+            const offsetX = Math.round(
+                backgroundPositioningArea.left + position.x
+            );
+            const offsetY = Math.round(
+                backgroundPositioningArea.top + position.y
+            );
+            this.target.renderRepeat(
+                path,
+                image,
+                backgroundImageSize,
+                offsetX,
+                offsetY
+            );
         }
     }
 
-    renderBackgroundGradient(container: NodeContainer, background: BackgroundImage) {
+    renderBackgroundGradient(
+        container: NodeContainer,
+        background: BackgroundImage
+    ) {
         const backgroundPositioningArea = calculateBackgroungPositioningArea(
             container.style.background.backgroundOrigin,
             container.bounds,
@@ -272,7 +320,11 @@ export default class Renderer {
             backgroundImageSize.height
         );
 
-        const gradient = parseGradient(container, background.source, gradientBounds);
+        const gradient = parseGradient(
+            container,
+            background.source,
+            gradientBounds
+        );
         if (gradient) {
             switch (gradient.type) {
                 case GRADIENT_TYPE.LINEAR_GRADIENT:
@@ -288,7 +340,10 @@ export default class Renderer {
     }
 
     renderBorder(border: Border, side: BorderSide, curvePoints: BoundCurves) {
-        this.target.drawShape(parsePathForBorder(curvePoints, side), border.borderColor);
+        this.target.drawShape(
+            parsePathForBorder(curvePoints, side),
+            border.borderColor
+        );
     }
 
     renderStack(stack: StackingContext) {
@@ -302,8 +357,10 @@ export default class Renderer {
             const transform = stack.container.style.transform;
             if (transform !== null) {
                 this.target.transform(
-                    stack.container.bounds.left + transform.transformOrigin[0].value,
-                    stack.container.bounds.top + transform.transformOrigin[1].value,
+                    stack.container.bounds.left +
+                        transform.transformOrigin[0].value,
+                    stack.container.bounds.top +
+                        transform.transformOrigin[1].value,
                     transform.transform,
                     () => this.renderStackContent(stack)
                 );
@@ -356,7 +413,6 @@ export default class Renderer {
     }
 
     render(stack: StackingContext): Promise<*> {
-        this.target.ctx.autoPaging = true;
         if (this.options.backgroundColor) {
             this.target.rectangle(
                 this.options.x,
@@ -378,7 +434,9 @@ export default class Renderer {
     }
 }
 
-const splitDescendants = (stack: StackingContext): [Array<NodeContainer>, Array<NodeContainer>] => {
+const splitDescendants = (
+    stack: StackingContext
+): [Array<NodeContainer>, Array<NodeContainer>] => {
     const inlineLevel = [];
     const nonInlineLevel = [];
 
@@ -443,7 +501,9 @@ const splitStackingContexts = (
 const sortByZIndex = (a: StackingContext, b: StackingContext): number => {
     if (a.container.style.zIndex.order > b.container.style.zIndex.order) {
         return 1;
-    } else if (a.container.style.zIndex.order < b.container.style.zIndex.order) {
+    } else if (
+        a.container.style.zIndex.order < b.container.style.zIndex.order
+    ) {
         return -1;
     }
 
