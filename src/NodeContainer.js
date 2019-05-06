@@ -1,66 +1,70 @@
 /* @flow */
-'use strict';
+"use strict";
 
-import type {Background} from './parsing/background';
-import type {Border} from './parsing/border';
-import type {BorderRadius} from './parsing/borderRadius';
-import type {DisplayBit} from './parsing/display';
-import type {Float} from './parsing/float';
-import type {Font} from './parsing/font';
-import type {LineBreak} from './parsing/lineBreak';
-import type {ListStyle} from './parsing/listStyle';
-import type {Margin} from './parsing/margin';
-import type {Overflow} from './parsing/overflow';
-import type {OverflowWrap} from './parsing/overflowWrap';
-import type {Padding} from './parsing/padding';
-import type {Position} from './parsing/position';
-import type {TextShadow} from './parsing/textShadow';
-import type {TextTransform} from './parsing/textTransform';
-import type {TextDecoration} from './parsing/textDecoration';
-import type {Transform} from './parsing/transform';
-import type {Visibility} from './parsing/visibility';
-import type {WordBreak} from './parsing/word-break';
-import type {zIndex} from './parsing/zIndex';
+import type { Background } from "./parsing/background";
+import type { Border } from "./parsing/border";
+import type { BorderRadius } from "./parsing/borderRadius";
+import type { DisplayBit } from "./parsing/display";
+import type { Float } from "./parsing/float";
+import type { Font } from "./parsing/font";
+import type { LineBreak } from "./parsing/lineBreak";
+import type { ListStyle } from "./parsing/listStyle";
+import type { Margin } from "./parsing/margin";
+import type { Overflow } from "./parsing/overflow";
+import type { OverflowWrap } from "./parsing/overflowWrap";
+import type { Padding } from "./parsing/padding";
+import type { Position } from "./parsing/position";
+import type { TextShadow } from "./parsing/textShadow";
+import type { TextTransform } from "./parsing/textTransform";
+import type { TextDecoration } from "./parsing/textDecoration";
+import type { Transform } from "./parsing/transform";
+import type { Visibility } from "./parsing/visibility";
+import type { WordBreak } from "./parsing/word-break";
+import type { zIndex } from "./parsing/zIndex";
 
-import type {Bounds, BoundCurves} from './Bounds';
-import type ResourceLoader, {ImageElement} from './ResourceLoader';
-import type {Path} from './drawing/Path';
-import type TextContainer from './TextContainer';
+import type { Bounds, BoundCurves } from "./Bounds";
+import type ResourceLoader, { ImageElement } from "./ResourceLoader";
+import type { Path } from "./drawing/Path";
+import type TextContainer from "./TextContainer";
 
-import Color from './Color';
+import Color from "./Color";
 
-import {contains} from './Util';
-import {parseBackground} from './parsing/background';
-import {parseBorder} from './parsing/border';
-import {parseBorderRadius} from './parsing/borderRadius';
-import {parseDisplay, DISPLAY} from './parsing/display';
-import {parseCSSFloat, FLOAT} from './parsing/float';
-import {parseFont} from './parsing/font';
-import {parseLetterSpacing} from './parsing/letterSpacing';
-import {parseLineBreak} from './parsing/lineBreak';
-import {parseListStyle} from './parsing/listStyle';
-import {parseMargin} from './parsing/margin';
-import {parseOverflow, OVERFLOW} from './parsing/overflow';
-import {parseOverflowWrap} from './parsing/overflowWrap';
-import {parsePadding} from './parsing/padding';
-import {parsePosition, POSITION} from './parsing/position';
-import {parseTextDecoration} from './parsing/textDecoration';
-import {parseTextShadow} from './parsing/textShadow';
-import {parseTextTransform} from './parsing/textTransform';
-import {parseTransform} from './parsing/transform';
-import {parseVisibility, VISIBILITY} from './parsing/visibility';
-import {parseWordBreak} from './parsing/word-break';
-import {parseZIndex} from './parsing/zIndex';
+import { contains } from "./Util";
+import { parseBackground } from "./parsing/background";
+import { parseBorder } from "./parsing/border";
+import { parseBorderRadius } from "./parsing/borderRadius";
+import { parseDisplay, DISPLAY } from "./parsing/display";
+import { parseCSSFloat, FLOAT } from "./parsing/float";
+import { parseFont } from "./parsing/font";
+import { parseLetterSpacing } from "./parsing/letterSpacing";
+import { parseLineBreak } from "./parsing/lineBreak";
+import { parseListStyle } from "./parsing/listStyle";
+import { parseMargin } from "./parsing/margin";
+import { parseOverflow, OVERFLOW } from "./parsing/overflow";
+import { parseOverflowWrap } from "./parsing/overflowWrap";
+import { parsePadding } from "./parsing/padding";
+import { parsePosition, POSITION } from "./parsing/position";
+import { parseTextDecoration } from "./parsing/textDecoration";
+import { parseTextShadow } from "./parsing/textShadow";
+import { parseTextTransform } from "./parsing/textTransform";
+import { parseTransform } from "./parsing/transform";
+import { parseVisibility, VISIBILITY } from "./parsing/visibility";
+import { parseWordBreak } from "./parsing/word-break";
+import { parseZIndex } from "./parsing/zIndex";
 
-import {parseBounds, parseBoundCurves, calculatePaddingBoxPath} from './Bounds';
+import {
+    parseBounds,
+    parseBoundCurves,
+    calculatePaddingBoxPath
+} from "./Bounds";
 import {
     INPUT_BACKGROUND,
     INPUT_BORDERS,
     INPUT_COLOR,
     getInputBorderRadius,
     reformatInputBounds
-} from './Input';
-import {getListOwner} from './ListItem';
+} from "./Input";
+import { getListOwner } from "./ListItem";
 
 type StyleDeclaration = {
     background: Background,
@@ -88,7 +92,7 @@ type StyleDeclaration = {
     zIndex: zIndex
 };
 
-const INPUT_TAGS = ['INPUT', 'TEXTAREA', 'SELECT'];
+const INPUT_TAGS = ["INPUT", "TEXTAREA", "SELECT"];
 
 export default class NodeContainer {
     name: ?string;
@@ -115,7 +119,7 @@ export default class NodeContainer {
         this.index = index;
         this.childNodes = [];
         this.listItems = [];
-        if (typeof node.start === 'number') {
+        if (typeof node.start === "number") {
             this.listStart = node.start;
         }
         const defaultView = node.ownerDocument.defaultView;
@@ -124,12 +128,14 @@ export default class NodeContainer {
         const style = defaultView.getComputedStyle(node, null);
         const display = parseDisplay(style.display);
 
-        const IS_INPUT = node.type === 'radio' || node.type === 'checkbox';
+        const IS_INPUT = node.type === "radio" || node.type === "checkbox";
 
         const position = parsePosition(style.position);
 
         this.style = {
-            background: IS_INPUT ? INPUT_BACKGROUND : parseBackground(style, resourceLoader),
+            background: IS_INPUT
+                ? INPUT_BACKGROUND
+                : parseBackground(style, resourceLoader),
             border: IS_INPUT ? INPUT_BORDERS : parseBorder(style),
             borderRadius:
                 (node instanceof defaultView.HTMLInputElement ||
@@ -142,7 +148,8 @@ export default class NodeContainer {
             float: parseCSSFloat(style.float),
             font: parseFont(style),
             letterSpacing: parseLetterSpacing(style.letterSpacing),
-            listStyle: display === DISPLAY.LIST_ITEM ? parseListStyle(style) : null,
+            listStyle:
+                display === DISPLAY.LIST_ITEM ? parseListStyle(style) : null,
             lineBreak: parseLineBreak(style.lineBreak),
             margin: parseMargin(style),
             opacity: parseFloat(style.opacity),
@@ -161,12 +168,14 @@ export default class NodeContainer {
             transform: parseTransform(style),
             visibility: parseVisibility(style.visibility),
             wordBreak: parseWordBreak(style.wordBreak),
-            zIndex: parseZIndex(position !== POSITION.STATIC ? style.zIndex : 'auto')
+            zIndex: parseZIndex(
+                position !== POSITION.STATIC ? style.zIndex : "auto"
+            )
         };
 
         if (this.isTransformed()) {
             // getBoundingClientRect provides values post-transform, we want them without the transformation
-            node.style.transform = 'matrix(1,0,0,1,0,0)';
+            node.style.transform = "matrix(1,0,0,1,0,0)";
         }
 
         if (display === DISPLAY.LIST_ITEM) {
@@ -175,17 +184,19 @@ export default class NodeContainer {
                 const listIndex = listOwner.listItems.length;
                 listOwner.listItems.push(this);
                 this.listIndex =
-                    node.hasAttribute('value') && typeof node.value === 'number'
+                    node.hasAttribute("value") && typeof node.value === "number"
                         ? node.value
                         : listIndex === 0
-                          ? typeof listOwner.listStart === 'number' ? listOwner.listStart : 1
+                          ? typeof listOwner.listStart === "number"
+                            ? listOwner.listStart
+                            : 1
                           : listOwner.listItems[listIndex - 1].listIndex + 1;
             }
         }
 
         // TODO move bound retrieval for all nodes to a later stage?
-        if (node.tagName === 'IMG') {
-            node.addEventListener('load', () => {
+        if (node.tagName === "IMG") {
+            node.addEventListener("load", () => {
                 this.bounds = parseBounds(node, scrollX, scrollY);
                 this.curvedBounds = parseBoundCurves(
                     this.bounds,
@@ -195,9 +206,16 @@ export default class NodeContainer {
             });
         }
         this.image = getImage(node, resourceLoader);
+        var imageOffset = 0;
+        this.image = getImage(node, resourceLoader);
+        if (this.image) {
+            var classAttr = node.getAttribute("class");
+            if (classAttr && classAttr.indexOf("iconGenericLoad") > -1)
+                imageOffset += 5;
+        }
         this.bounds = IS_INPUT
             ? reformatInputBounds(parseBounds(node, scrollX, scrollY))
-            : parseBounds(node, scrollX, scrollY);
+            : parseBounds(node, scrollX, scrollY + imageOffset);
         this.curvedBounds = parseBoundCurves(
             this.bounds,
             this.style.border,
@@ -207,11 +225,11 @@ export default class NodeContainer {
         if (__DEV__) {
             this.name = `${node.tagName.toLowerCase()}${node.id
                 ? `#${node.id}`
-                : ''}${node.className
+                : ""}${node.className
                 .toString()
-                .split(' ')
-                .map(s => (s.length ? `.${s}` : ''))
-                .join('')}`;
+                .split(" ")
+                .map(s => (s.length ? `.${s}` : ""))
+                .join("")}`;
         }
     }
     getClipPaths(): Array<Path> {
@@ -223,7 +241,11 @@ export default class NodeContainer {
             : parentClips;
     }
     isInFlow(): boolean {
-        return this.isRootElement() && !this.isFloating() && !this.isAbsolutelyPositioned();
+        return (
+            this.isRootElement() &&
+            !this.isFloating() &&
+            !this.isAbsolutelyPositioned()
+        );
     }
     isVisible(): boolean {
         return (
@@ -233,7 +255,10 @@ export default class NodeContainer {
         );
     }
     isAbsolutelyPositioned(): boolean {
-        return this.style.position !== POSITION.STATIC && this.style.position !== POSITION.RELATIVE;
+        return (
+            this.style.position !== POSITION.STATIC &&
+            this.style.position !== POSITION.RELATIVE
+        );
     }
     isPositioned(): boolean {
         return this.style.position !== POSITION.STATIC;
@@ -268,27 +293,34 @@ export default class NodeContainer {
     }
 }
 
-const getImage = (node: HTMLElement | SVGSVGElement, resourceLoader: ResourceLoader): ?string => {
+const getImage = (
+    node: HTMLElement | SVGSVGElement,
+    resourceLoader: ResourceLoader
+): ?string => {
     if (
         node instanceof node.ownerDocument.defaultView.SVGSVGElement ||
         node instanceof SVGSVGElement
     ) {
         const s = new XMLSerializer();
         return resourceLoader.loadImage(
-            `data:image/svg+xml,${encodeURIComponent(s.serializeToString(node))}`
+            `data:image/svg+xml,${encodeURIComponent(
+                s.serializeToString(node)
+            )}`
         );
     }
     switch (node.tagName) {
-        case 'IMG':
+        case "IMG":
             // $FlowFixMe
             const img: HTMLImageElement = node;
             return resourceLoader.loadImage(img.currentSrc || img.src);
-        case 'CANVAS':
+        case "CANVAS":
             // $FlowFixMe
             const canvas: HTMLCanvasElement = node;
             return resourceLoader.loadCanvas(canvas);
-        case 'IFRAME':
-            const iframeKey = node.getAttribute('data-html2canvas-internal-iframe-key');
+        case "IFRAME":
+            const iframeKey = node.getAttribute(
+                "data-html2canvas-internal-iframe-key"
+            );
             if (iframeKey) {
                 return iframeKey;
             }

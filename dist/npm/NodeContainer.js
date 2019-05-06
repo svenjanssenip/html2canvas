@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 Object.defineProperty(exports, "__esModule", {
     value: true
@@ -6,65 +6,65 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _Color = require('./Color');
+var _Color = require("./Color");
 
 var _Color2 = _interopRequireDefault(_Color);
 
-var _Util = require('./Util');
+var _Util = require("./Util");
 
-var _background = require('./parsing/background');
+var _background = require("./parsing/background");
 
-var _border = require('./parsing/border');
+var _border = require("./parsing/border");
 
-var _borderRadius = require('./parsing/borderRadius');
+var _borderRadius = require("./parsing/borderRadius");
 
-var _display = require('./parsing/display');
+var _display = require("./parsing/display");
 
-var _float = require('./parsing/float');
+var _float = require("./parsing/float");
 
-var _font = require('./parsing/font');
+var _font = require("./parsing/font");
 
-var _letterSpacing = require('./parsing/letterSpacing');
+var _letterSpacing = require("./parsing/letterSpacing");
 
-var _lineBreak = require('./parsing/lineBreak');
+var _lineBreak = require("./parsing/lineBreak");
 
-var _listStyle = require('./parsing/listStyle');
+var _listStyle = require("./parsing/listStyle");
 
-var _margin = require('./parsing/margin');
+var _margin = require("./parsing/margin");
 
-var _overflow = require('./parsing/overflow');
+var _overflow = require("./parsing/overflow");
 
-var _overflowWrap = require('./parsing/overflowWrap');
+var _overflowWrap = require("./parsing/overflowWrap");
 
-var _padding = require('./parsing/padding');
+var _padding = require("./parsing/padding");
 
-var _position = require('./parsing/position');
+var _position = require("./parsing/position");
 
-var _textDecoration = require('./parsing/textDecoration');
+var _textDecoration = require("./parsing/textDecoration");
 
-var _textShadow = require('./parsing/textShadow');
+var _textShadow = require("./parsing/textShadow");
 
-var _textTransform = require('./parsing/textTransform');
+var _textTransform = require("./parsing/textTransform");
 
-var _transform = require('./parsing/transform');
+var _transform = require("./parsing/transform");
 
-var _visibility = require('./parsing/visibility');
+var _visibility = require("./parsing/visibility");
 
-var _wordBreak = require('./parsing/word-break');
+var _wordBreak = require("./parsing/word-break");
 
-var _zIndex = require('./parsing/zIndex');
+var _zIndex = require("./parsing/zIndex");
 
-var _Bounds = require('./Bounds');
+var _Bounds = require("./Bounds");
 
-var _Input = require('./Input');
+var _Input = require("./Input");
 
-var _ListItem = require('./ListItem');
+var _ListItem = require("./ListItem");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var INPUT_TAGS = ['INPUT', 'TEXTAREA', 'SELECT'];
+var INPUT_TAGS = ["INPUT", "TEXTAREA", "SELECT"];
 
 var NodeContainer = function () {
     function NodeContainer(node, parent, resourceLoader, index) {
@@ -77,7 +77,7 @@ var NodeContainer = function () {
         this.index = index;
         this.childNodes = [];
         this.listItems = [];
-        if (typeof node.start === 'number') {
+        if (typeof node.start === "number") {
             this.listStart = node.start;
         }
         var defaultView = node.ownerDocument.defaultView;
@@ -86,7 +86,7 @@ var NodeContainer = function () {
         var style = defaultView.getComputedStyle(node, null);
         var display = (0, _display.parseDisplay)(style.display);
 
-        var IS_INPUT = node.type === 'radio' || node.type === 'checkbox';
+        var IS_INPUT = node.type === "radio" || node.type === "checkbox";
 
         var position = (0, _position.parsePosition)(style.position);
 
@@ -113,12 +113,12 @@ var NodeContainer = function () {
             transform: (0, _transform.parseTransform)(style),
             visibility: (0, _visibility.parseVisibility)(style.visibility),
             wordBreak: (0, _wordBreak.parseWordBreak)(style.wordBreak),
-            zIndex: (0, _zIndex.parseZIndex)(position !== _position.POSITION.STATIC ? style.zIndex : 'auto')
+            zIndex: (0, _zIndex.parseZIndex)(position !== _position.POSITION.STATIC ? style.zIndex : "auto")
         };
 
         if (this.isTransformed()) {
             // getBoundingClientRect provides values post-transform, we want them without the transformation
-            node.style.transform = 'matrix(1,0,0,1,0,0)';
+            node.style.transform = "matrix(1,0,0,1,0,0)";
         }
 
         if (display === _display.DISPLAY.LIST_ITEM) {
@@ -126,30 +126,36 @@ var NodeContainer = function () {
             if (listOwner) {
                 var listIndex = listOwner.listItems.length;
                 listOwner.listItems.push(this);
-                this.listIndex = node.hasAttribute('value') && typeof node.value === 'number' ? node.value : listIndex === 0 ? typeof listOwner.listStart === 'number' ? listOwner.listStart : 1 : listOwner.listItems[listIndex - 1].listIndex + 1;
+                this.listIndex = node.hasAttribute("value") && typeof node.value === "number" ? node.value : listIndex === 0 ? typeof listOwner.listStart === "number" ? listOwner.listStart : 1 : listOwner.listItems[listIndex - 1].listIndex + 1;
             }
         }
 
         // TODO move bound retrieval for all nodes to a later stage?
-        if (node.tagName === 'IMG') {
-            node.addEventListener('load', function () {
+        if (node.tagName === "IMG") {
+            node.addEventListener("load", function () {
                 _this.bounds = (0, _Bounds.parseBounds)(node, scrollX, scrollY);
                 _this.curvedBounds = (0, _Bounds.parseBoundCurves)(_this.bounds, _this.style.border, _this.style.borderRadius);
             });
         }
         this.image = getImage(node, resourceLoader);
-        this.bounds = IS_INPUT ? (0, _Input.reformatInputBounds)((0, _Bounds.parseBounds)(node, scrollX, scrollY)) : (0, _Bounds.parseBounds)(node, scrollX, scrollY);
+        var imageOffset = 0;
+        this.image = getImage(node, resourceLoader);
+        if (this.image) {
+            var classAttr = node.getAttribute("class");
+            if (classAttr && classAttr.indexOf("iconGenericLoad") > -1) imageOffset += 5;
+        }
+        this.bounds = IS_INPUT ? (0, _Input.reformatInputBounds)((0, _Bounds.parseBounds)(node, scrollX, scrollY)) : (0, _Bounds.parseBounds)(node, scrollX, scrollY + imageOffset);
         this.curvedBounds = (0, _Bounds.parseBoundCurves)(this.bounds, this.style.border, this.style.borderRadius);
 
-        if (process.env.NODE_ENV !== 'production') {
-            this.name = '' + node.tagName.toLowerCase() + (node.id ? '#' + node.id : '') + node.className.toString().split(' ').map(function (s) {
-                return s.length ? '.' + s : '';
-            }).join('');
+        if (process.env.NODE_ENV !== "production") {
+            this.name = "" + node.tagName.toLowerCase() + (node.id ? "#" + node.id : "") + node.className.toString().split(" ").map(function (s) {
+                return s.length ? "." + s : "";
+            }).join("");
         }
     }
 
     _createClass(NodeContainer, [{
-        key: 'getClipPaths',
+        key: "getClipPaths",
         value: function getClipPaths() {
             var parentClips = this.parent ? this.parent.getClipPaths() : [];
             var isClipped = this.style.overflow !== _overflow.OVERFLOW.VISIBLE;
@@ -157,52 +163,52 @@ var NodeContainer = function () {
             return isClipped ? parentClips.concat([(0, _Bounds.calculatePaddingBoxPath)(this.curvedBounds)]) : parentClips;
         }
     }, {
-        key: 'isInFlow',
+        key: "isInFlow",
         value: function isInFlow() {
             return this.isRootElement() && !this.isFloating() && !this.isAbsolutelyPositioned();
         }
     }, {
-        key: 'isVisible',
+        key: "isVisible",
         value: function isVisible() {
             return !(0, _Util.contains)(this.style.display, _display.DISPLAY.NONE) && this.style.opacity > 0 && this.style.visibility === _visibility.VISIBILITY.VISIBLE;
         }
     }, {
-        key: 'isAbsolutelyPositioned',
+        key: "isAbsolutelyPositioned",
         value: function isAbsolutelyPositioned() {
             return this.style.position !== _position.POSITION.STATIC && this.style.position !== _position.POSITION.RELATIVE;
         }
     }, {
-        key: 'isPositioned',
+        key: "isPositioned",
         value: function isPositioned() {
             return this.style.position !== _position.POSITION.STATIC;
         }
     }, {
-        key: 'isFloating',
+        key: "isFloating",
         value: function isFloating() {
             return this.style.float !== _float.FLOAT.NONE;
         }
     }, {
-        key: 'isRootElement',
+        key: "isRootElement",
         value: function isRootElement() {
             return this.parent === null;
         }
     }, {
-        key: 'isTransformed',
+        key: "isTransformed",
         value: function isTransformed() {
             return this.style.transform !== null;
         }
     }, {
-        key: 'isPositionedWithZIndex',
+        key: "isPositionedWithZIndex",
         value: function isPositionedWithZIndex() {
             return this.isPositioned() && !this.style.zIndex.auto;
         }
     }, {
-        key: 'isInlineLevel',
+        key: "isInlineLevel",
         value: function isInlineLevel() {
             return (0, _Util.contains)(this.style.display, _display.DISPLAY.INLINE) || (0, _Util.contains)(this.style.display, _display.DISPLAY.INLINE_BLOCK) || (0, _Util.contains)(this.style.display, _display.DISPLAY.INLINE_FLEX) || (0, _Util.contains)(this.style.display, _display.DISPLAY.INLINE_GRID) || (0, _Util.contains)(this.style.display, _display.DISPLAY.INLINE_LIST_ITEM) || (0, _Util.contains)(this.style.display, _display.DISPLAY.INLINE_TABLE);
         }
     }, {
-        key: 'isInlineBlockOrInlineTable',
+        key: "isInlineBlockOrInlineTable",
         value: function isInlineBlockOrInlineTable() {
             return (0, _Util.contains)(this.style.display, _display.DISPLAY.INLINE_BLOCK) || (0, _Util.contains)(this.style.display, _display.DISPLAY.INLINE_TABLE);
         }
@@ -217,19 +223,19 @@ exports.default = NodeContainer;
 var getImage = function getImage(node, resourceLoader) {
     if (node instanceof node.ownerDocument.defaultView.SVGSVGElement || node instanceof SVGSVGElement) {
         var s = new XMLSerializer();
-        return resourceLoader.loadImage('data:image/svg+xml,' + encodeURIComponent(s.serializeToString(node)));
+        return resourceLoader.loadImage("data:image/svg+xml," + encodeURIComponent(s.serializeToString(node)));
     }
     switch (node.tagName) {
-        case 'IMG':
+        case "IMG":
             // $FlowFixMe
             var img = node;
             return resourceLoader.loadImage(img.currentSrc || img.src);
-        case 'CANVAS':
+        case "CANVAS":
             // $FlowFixMe
             var canvas = node;
             return resourceLoader.loadCanvas(canvas);
-        case 'IFRAME':
-            var iframeKey = node.getAttribute('data-html2canvas-internal-iframe-key');
+        case "IFRAME":
+            var iframeKey = node.getAttribute("data-html2canvas-internal-iframe-key");
             if (iframeKey) {
                 return iframeKey;
             }
